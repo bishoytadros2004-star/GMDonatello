@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bisho's Lab — Biotechnology · AI · Scientific Innovation</title>
+  <title>Bisho's Lab — AI · Scientific Innovation</title>
 
   <!-- SEO Meta -->
-  <meta name="description" content="Bisho's Lab: Empowering Biotechnology, Artificial Intelligence, and Scientific Innovation. E-Books, research, and digital learning resources." />
-  <meta name="keywords" content="biotechnology, AI, bioinformatics, machine learning, ebooks, scientific research" />
+  <meta name="description" content="Bisho's Lab: Empowering Artificial Intelligence and Scientific Innovation. E-Books, research, and digital learning resources." />
+  <meta name="keywords" content="AI, bioinformatics, machine learning, ebooks, scientific research" />
   <meta name="author" content="Bisho's Lab" />
   <link rel="canonical" href="https://bishoslab.com" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Bisho's Lab — Biotechnology · AI · Scientific Innovation" />
-  <meta property="og:description" content="Empowering Biotechnology, Artificial Intelligence, and Scientific Innovation." />
+  <meta property="og:title" content="Bisho's Lab — AI · Scientific Innovation" />
+  <meta property="og:description" content="Empowering Artificial Intelligence and Scientific Innovation." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://bishoslab.com" />
   <meta property="og:image" content="https://bishoslab.com/og-image.jpg" />
@@ -26,9 +26,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
-
-  <!-- Framer Motion via ESM (for production we'd bundle, here we load from CDN for demo) -->
-  <script src="https://unpkg.com/framer-motion@11.0.2/dist/framer-motion.js"></script>
 
   <!-- Chart.js for admin charts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -184,9 +181,36 @@
       100% { opacity: 1; transform: translateY(0); }
     }
 
-    /* Admin table row hover */
-    .admin-row-hover:hover {
-      background: rgba(0, 180, 255, 0.05);
+    /* ----- Payment Modal ----- */
+    #payment-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #payment-modal.active {
+      display: flex;
+    }
+    .modal-content {
+      max-width: 560px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-content::-webkit-scrollbar { width: 4px; }
+    .modal-content::-webkit-scrollbar-thumb { background: #2a4a7f; border-radius: 8px; }
+
+    /* Admin upload area */
+    #admin-upload-area {
+      transition: all 0.3s ease;
+    }
+    #admin-upload-area.hidden {
+      display: none;
     }
 
     /* Loader */
@@ -304,10 +328,10 @@
           </div>
           <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight">
             <span class="bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent">
-              Empowering Biotechnology,
+              Empowering Artificial Intelligence
             </span><br />
             <span class="bg-gradient-to-r from-blue-300 via-purple-300 to-cyan-300 bg-clip-text text-transparent">
-              AI, and Scientific Innovation.
+              and Scientific Innovation.
             </span>
           </h1>
           <p class="mt-6 text-lg md:text-xl text-white/50 max-w-2xl mx-auto font-light leading-relaxed">
@@ -339,7 +363,7 @@
       <div class="max-w-6xl mx-auto px-4 pb-20 -mt-10">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="glass p-6 text-center stat-card">
-            <div class="text-3xl font-bold text-cyan-400 stat-number" data-target="12">0</div>
+            <div class="text-3xl font-bold text-cyan-400 stat-number" data-target="5">0</div>
             <div class="text-sm text-white/40 mt-1">Published E-books</div>
           </div>
           <div class="glass p-6 text-center stat-card">
@@ -495,11 +519,10 @@
             <input type="text" id="book-search" placeholder="Search books..." class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30 focus:outline-none focus:border-cyan-500/50 w-48 md:w-64" />
             <select id="book-category-filter" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 focus:outline-none focus:border-cyan-500/50">
               <option value="all">All Categories</option>
-              <option value="biotechnology">Biotechnology</option>
-              <option value="bioinformatics">Bioinformatics</option>
-              <option value="ai">Artificial Intelligence</option>
               <option value="lab-techniques">Lab Techniques</option>
               <option value="wellbeing">Wellbeing</option>
+              <option value="biotechnology">Biotechnology</option>
+              <option value="ai">Artificial Intelligence</option>
             </select>
           </div>
         </div>
@@ -509,7 +532,7 @@
           <!-- Books rendered by JS -->
         </div>
 
-        <!-- Admin: Upload button (visible when logged in as admin) -->
+        <!-- Admin: Upload area (visible when logged in as admin) -->
         <div id="admin-upload-area" class="mt-12 hidden">
           <div class="glass p-8 border border-dashed border-cyan-500/30">
             <h3 class="text-lg font-semibold text-white/90">📤 Admin — Upload New Book</h3>
@@ -518,11 +541,10 @@
               <input type="text" id="book-description" placeholder="Description" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30" />
               <input type="number" id="book-pages" placeholder="Pages" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30" />
               <select id="book-category" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80">
-                <option value="biotechnology">Biotechnology</option>
-                <option value="bioinformatics">Bioinformatics</option>
-                <option value="ai">Artificial Intelligence</option>
                 <option value="lab-techniques">Lab Techniques</option>
                 <option value="wellbeing">Wellbeing</option>
+                <option value="biotechnology">Biotechnology</option>
+                <option value="ai">Artificial Intelligence</option>
               </select>
               <input type="file" id="book-pdf" accept=".pdf" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-cyan-500/20 file:text-cyan-300" />
               <input type="file" id="book-cover" accept="image/*" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-cyan-500/20 file:text-cyan-300" />
@@ -737,11 +759,53 @@
   </main>
 
   <!-- ============================================================ -->
+  <!--  PAYMENT MODAL                                               -->
+  <!-- ============================================================ -->
+  <div id="payment-modal">
+    <div class="modal-content glass p-6 md:p-8 relative">
+      <button id="close-payment-modal" class="absolute top-4 right-4 text-white/40 hover:text-white text-2xl">&times;</button>
+      <h3 class="text-2xl font-bold text-white/90 mb-2" id="payment-book-title">Purchase Book</h3>
+      <p class="text-white/40 text-sm mb-6" id="payment-book-price">50 EGP</p>
+
+      <!-- Tabs -->
+      <div class="flex border-b border-white/10 mb-6">
+        <button class="payment-tab py-2 px-4 text-sm font-medium text-cyan-400 border-b-2 border-cyan-400" data-tab="vodafone">Vodafone Cash</button>
+        <button class="payment-tab py-2 px-4 text-sm font-medium text-white/40 hover:text-white/70 border-b-2 border-transparent" data-tab="visa">Visa / Mastercard</button>
+      </div>
+
+      <!-- Vodafone Cash Tab -->
+      <div id="tab-vodafone" class="payment-tab-content">
+        <div class="bg-white/5 rounded-xl p-4 mb-4">
+          <p class="text-white/70 text-sm">Send <strong class="text-cyan-300">50 EGP</strong> to:</p>
+          <p class="text-xl font-mono text-white/90">+20 108 010 7649</p>
+          <p class="text-white/40 text-xs mt-1">Vodafone Cash</p>
+        </div>
+        <div class="mb-4">
+          <label class="text-white/60 text-sm block mb-1">Upload payment screenshot</label>
+          <input type="file" id="payment-screenshot" accept="image/*" class="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-cyan-500/20 file:text-cyan-300" />
+        </div>
+        <button id="confirm-vodafone-btn" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/25 transition-all">Confirm Payment & Download</button>
+        <p class="text-white/30 text-xs mt-3 text-center">After confirmation, your download will start automatically.</p>
+      </div>
+
+      <!-- Visa Tab -->
+      <div id="tab-visa" class="payment-tab-content hidden">
+        <div class="bg-white/5 rounded-xl p-4 mb-4">
+          <p class="text-white/70 text-sm">Test card: <span class="text-cyan-300">4111 1111 1111 1111</span></p>
+          <p class="text-white/70 text-sm">Exp: 12/26 · CVV: 123</p>
+        </div>
+        <button id="confirm-visa-btn" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:shadow-lg hover:shadow-purple-500/25 transition-all">Simulate Visa Payment & Download</button>
+        <p class="text-white/30 text-xs mt-3 text-center">This is a demo — no real charges will be made.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
   <!--  FOOTER                                                      -->
   <!-- ============================================================ -->
   <footer class="relative z-10 border-t border-white/5 mt-20 py-8 px-4">
     <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-sm text-white/30">
-      <span>© 2026 Bisho's Lab — Biotechnology · AI · Scientific Innovation</span>
+      <span>© 2026 Bisho's Lab — AI · Scientific Innovation</span>
       <span class="flex items-center gap-4">
         <a href="#" data-page="home" class="hover:text-white/60 transition-colors">Home</a>
         <a href="#" data-page="store" class="hover:text-white/60 transition-colors">Store</a>
@@ -751,24 +815,23 @@
   </footer>
 
   <!-- ============================================================ -->
-  <!--  JAVASCRIPT — Full SPA + Admin + Books + Payment + Animations -->
+  <!--  JAVASCRIPT — Full SPA + Admin + Books + Payment Modal      -->
   <!-- ============================================================ -->
   <script>
     (function() {
       'use strict';
 
-      // -------- DATA STORE (in-memory, demo) --------
+      // -------- REAL E-BOOK DATA (no fake data) --------
       let books = [
-        { id: 1, title: 'Molecular Biology Lab Techniques', description: 'PCR, Western blot, CRISPR, and more.', pages: 168, category: 'lab-techniques', price: 50, cover: '🧬', pdf: 'molbio_lab.pdf' },
-        { id: 2, title: 'Wellbeing & Social Anxiety', description: 'Evidence-based strategies for mental wellness.', pages: 132, category: 'wellbeing', price: 50, cover: '🧠', pdf: 'wellbeing_social.pdf' },
-        { id: 3, title: 'Cancer Biology Essentials', description: 'Hallmarks, genetics, and therapeutics.', pages: 210, category: 'biotechnology', price: 50, cover: '🧫', pdf: 'cancer_bio.pdf' },
-        { id: 4, title: 'How to Become a Human Being', description: 'Vulnerability, connection, grief, and purpose.', pages: 144, category: 'wellbeing', price: 50, cover: '💫', pdf: 'human_being.pdf' },
-        { id: 5, title: 'Just Get Started', description: 'A no-fluff guide to learning anything faster.', pages: 96, category: 'ai', price: 50, cover: '🚀', pdf: 'just_started.pdf' },
-        { id: 6, title: 'Bioinformatics with Python', description: 'From sequence analysis to machine learning.', pages: 256, category: 'bioinformatics', price: 50, cover: '🐍', pdf: 'bioinfo_py.pdf' },
+        { id: 1, title: 'Molecular Biology Lab Techniques', description: 'PCR, Western blot, CRISPR, and more.', pages: 23, category: 'lab-techniques', price: 50, cover: '🧬', pdf: 'molbio_lab.pdf' },
+        { id: 2, title: 'Wellbeing & Social Anxiety', description: 'Evidence-based strategies for mental wellness.', pages: 18, category: 'wellbeing', price: 50, cover: '🧠', pdf: 'wellbeing_social.pdf' },
+        { id: 3, title: 'Cancer Biology Essentials', description: 'Hallmarks, genetics, and therapeutics.', pages: 18, category: 'biotechnology', price: 50, cover: '🧫', pdf: 'cancer_bio.pdf' },
+        { id: 4, title: 'How to Become a Human Being', description: 'Vulnerability, connection, grief, and purpose.', pages: 21, category: 'wellbeing', price: 50, cover: '💫', pdf: 'human_being.pdf' },
+        { id: 5, title: 'Just Get Started', description: 'A no-fluff guide to learning anything faster.', pages: 14, category: 'ai', price: 50, cover: '🚀', pdf: 'just_started.pdf' },
       ];
 
       let currentUser = null; // { email, isAdmin }
-      let cart = [];
+      let currentPurchasingBook = null; // for modal
 
       // -------- DOM refs --------
       const $ = (sel) => document.querySelector(sel);
@@ -788,20 +851,19 @@
         login: $('#page-login'),
       };
 
+      const paymentModal = $('#payment-modal');
+      const closeModalBtn = $('#close-payment-modal');
+
       // -------- Navigation --------
       function navigate(pageId) {
-        // Hide all pages
         Object.values(pages).forEach(p => p.classList.add('hidden'));
-        // Show target
         const target = pages[pageId];
         if (target) {
           target.classList.remove('hidden');
           target.classList.remove('page-transition');
-          // re-trigger transition
           void target.offsetWidth;
           target.classList.add('page-transition');
         }
-        // Update nav active state
         $$('.nav-link').forEach(el => {
           el.classList.remove('text-white', 'bg-white/5');
           el.classList.add('text-white/70');
@@ -810,20 +872,18 @@
           el.classList.remove('text-white/70');
           el.classList.add('text-white', 'bg-white/5');
         });
-        // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        // Close mobile menu
         $('#mobile-menu').classList.add('hidden');
-        // Update URL hash
         if (pageId !== 'home') history.pushState({ page: pageId }, '', '#' + pageId);
         else history.pushState({ page: 'home' }, '', '#');
-        // Trigger stats animation if home
         if (pageId === 'home') animateStats();
-        // Render store if store
         if (pageId === 'store') renderBooks();
-        // Show admin upload if admin
         const isAdmin = currentUser && currentUser.isAdmin;
-        $('#admin-upload-area').classList.toggle('hidden', !isAdmin);
+        const uploadArea = $('#admin-upload-area');
+        if (uploadArea) {
+          if (pageId === 'store' && isAdmin) uploadArea.classList.remove('hidden');
+          else uploadArea.classList.add('hidden');
+        }
       }
 
       // -------- Event listeners for nav --------
@@ -835,7 +895,6 @@
         });
       });
 
-      // Mobile toggle
       $('#mobile-toggle').addEventListener('click', () => {
         $('#mobile-menu').classList.toggle('hidden');
       });
@@ -900,7 +959,6 @@
       function drawParticles() {
         ctx.clearRect(0, 0, w, h);
         particles.forEach(p => { p.update(); p.draw(); });
-        // Draw connections
         for (let i = 0; i < particles.length; i++) {
           for (let j = i + 1; j < particles.length; j++) {
             const dx = particles[i].x - particles[j].x;
@@ -977,7 +1035,7 @@
           btn.addEventListener('click', (e) => {
             const id = parseInt(btn.dataset.id);
             const book = books.find(b => b.id === id);
-            if (book) initiatePurchase(book);
+            if (book) openPaymentModal(book);
           });
         });
         // Preview handlers
@@ -990,44 +1048,91 @@
         });
       }
 
-      // -------- Purchase flow --------
-      function initiatePurchase(book) {
+      // -------- Payment Modal --------
+      function openPaymentModal(book) {
         if (!currentUser) {
           showToast('Please sign in to purchase books.', 'error');
           navigate('login');
           return;
         }
-        // Simple purchase dialog (Vodafone Cash or Visa)
-        const choice = confirm(`Buy "${book.title}" for ${book.price} EGP?\n\nClick OK for Vodafone Cash (${book.price} EGP to +20 108 010 7649)\nCancel for Visa/Mastercard (demo)`);
-        if (choice) {
-          // Vodafone Cash
-          showToast(`📱 Send ${book.price} EGP to Vodafone Cash: +20 108 010 7649. Upload screenshot after payment.`, 'info');
-          // Simulate upload screenshot
-          setTimeout(() => {
-            if (confirm('📸 Have you sent the payment? Click OK to confirm and download.')) {
-              showToast(`✅ Payment confirmed! Downloading "${book.title}"...`, 'success');
-              // Simulate download
-              const link = document.createElement('a');
-              link.href = '#'; // In real app, this would be a signed URL
-              link.download = `${book.title}.pdf`;
-              link.click();
-              showToast(`📥 "${book.title}" downloaded successfully!`, 'success');
-            }
-          }, 2000);
-        } else {
-          // Visa demo
-          showToast('💳 Visa/Mastercard payment gateway placeholder. Card: 4111 1111 1111 1111, Exp: 12/26, CVV: 123', 'info');
-          setTimeout(() => {
-            if (confirm('Simulate successful Visa payment? Click OK to complete.')) {
-              showToast(`✅ Visa payment successful! Downloading "${book.title}"...`, 'success');
-              const link = document.createElement('a');
-              link.href = '#';
-              link.download = `${book.title}.pdf`;
-              link.click();
-              showToast(`📥 "${book.title}" downloaded!`, 'success');
-            }
-          }, 1500);
+        currentPurchasingBook = book;
+        $('#payment-book-title').textContent = book.title;
+        $('#payment-book-price').textContent = `${book.price} EGP`;
+        // Reset tabs
+        document.querySelectorAll('.payment-tab').forEach(t => t.classList.remove('border-cyan-400', 'text-cyan-400'));
+        document.querySelector('.payment-tab[data-tab="vodafone"]').classList.add('border-cyan-400', 'text-cyan-400');
+        document.querySelectorAll('.payment-tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById('tab-vodafone').classList.remove('hidden');
+        // Clear screenshot input
+        $('#payment-screenshot').value = '';
+        paymentModal.classList.add('active');
+      }
+
+      function closePaymentModal() {
+        paymentModal.classList.remove('active');
+        currentPurchasingBook = null;
+      }
+
+      closeModalBtn.addEventListener('click', closePaymentModal);
+      paymentModal.addEventListener('click', (e) => {
+        if (e.target === paymentModal) closePaymentModal();
+      });
+
+      // Payment tabs
+      document.querySelectorAll('.payment-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.payment-tab').forEach(t => {
+            t.classList.remove('border-cyan-400', 'text-cyan-400');
+            t.classList.add('border-transparent', 'text-white/40');
+          });
+          tab.classList.add('border-cyan-400', 'text-cyan-400');
+          document.querySelectorAll('.payment-tab-content').forEach(c => c.classList.add('hidden'));
+          const target = tab.dataset.tab;
+          document.getElementById(`tab-${target}`).classList.remove('hidden');
+        });
+      });
+
+      // -------- Confirm Vodafone payment --------
+      $('#confirm-vodafone-btn').addEventListener('click', () => {
+        const fileInput = $('#payment-screenshot');
+        if (!fileInput.files || fileInput.files.length === 0) {
+          showToast('Please upload a screenshot of the payment.', 'error');
+          return;
         }
+        // Simulate admin approval
+        showToast('✅ Payment received! Admin is verifying...', 'info');
+        setTimeout(() => {
+          showToast('✅ Payment approved! Downloading your e-book...', 'success');
+          downloadBook(currentPurchasingBook);
+          closePaymentModal();
+        }, 2000);
+      });
+
+      // -------- Confirm Visa (demo) --------
+      $('#confirm-visa-btn').addEventListener('click', () => {
+        showToast('💳 Simulating Visa payment...', 'info');
+        setTimeout(() => {
+          showToast('✅ Visa payment successful! Downloading...', 'success');
+          downloadBook(currentPurchasingBook);
+          closePaymentModal();
+        }, 1500);
+      });
+
+      // -------- Download book (simulated) --------
+      function downloadBook(book) {
+        if (!book) return;
+        // Generate a simple PDF-like blob (actual PDF would be served from server)
+        const content = `This is a sample PDF content for "${book.title}".\n\nPages: ${book.pages}\nCategory: ${book.category}\n\nIn a real implementation, the actual PDF file would be downloaded.\n\nThank you for purchasing from Bisho's Lab!`;
+        const blob = new Blob([content], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${book.title.replace(/\s+/g, '_')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast(`📥 "${book.title}" downloaded successfully!`, 'success');
       }
 
       // -------- Admin: Upload book --------
@@ -1057,7 +1162,6 @@
         books.push(newBook);
         renderBooks();
         showToast(`📚 "${title}" uploaded successfully!`, 'success');
-        // Clear fields
         $('#book-title').value = '';
         $('#book-description').value = '';
         $('#book-pages').value = '';
@@ -1080,7 +1184,6 @@
         btn.addEventListener('click', () => {
           const answer = btn.nextElementSibling;
           const isOpen = !answer.classList.contains('hidden');
-          // Close all
           $$('.faq-answer').forEach(a => a.classList.add('hidden'));
           $$('.faq-toggle span:last-child').forEach(s => s.textContent = '+');
           if (!isOpen) {
@@ -1106,7 +1209,8 @@
           currentUser = { email, isAdmin: true };
           showToast('👋 Welcome back, Admin!', 'success');
           navigate('home');
-          $('#admin-upload-area').classList.remove('hidden');
+          const uploadArea = $('#admin-upload-area');
+          if (uploadArea) uploadArea.classList.remove('hidden');
           renderBooks();
         } else if (email && pass) {
           currentUser = { email, isAdmin: false };
@@ -1137,7 +1241,10 @@
 
       // -------- Keyboard shortcut: Escape to home --------
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') navigate('home');
+        if (e.key === 'Escape') {
+          if (paymentModal.classList.contains('active')) closePaymentModal();
+          else navigate('home');
+        }
       });
 
       // -------- Expose for debugging --------
