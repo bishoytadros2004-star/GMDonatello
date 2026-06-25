@@ -1,460 +1,1150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bishoy Tadros – Digital Store</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bisho's Lab — Biotechnology · AI · Scientific Innovation</title>
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- SEO Meta -->
+  <meta name="description" content="Bisho's Lab: Empowering Biotechnology, Artificial Intelligence, and Scientific Innovation. E-Books, research, and digital learning resources." />
+  <meta name="keywords" content="biotechnology, AI, bioinformatics, machine learning, ebooks, scientific research" />
+  <meta name="author" content="Bisho's Lab" />
+  <link rel="canonical" href="https://bishoslab.com" />
 
-    <style>
-        /* RESET & BASE */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <!-- Open Graph -->
+  <meta property="og:title" content="Bisho's Lab — Biotechnology · AI · Scientific Innovation" />
+  <meta property="og:description" content="Empowering Biotechnology, Artificial Intelligence, and Scientific Innovation." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://bishoslab.com" />
+  <meta property="og:image" content="https://bishoslab.com/og-image.jpg" />
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #faf8f5;
-            color: #1e1e1e;
-            line-height: 1.6;
-            padding: 20px;
-        }
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>" />
 
-        .container {
-            max-width: 820px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 50px 40px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-        }
+  <!-- Tailwind + Inter Font -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
 
-        /* STORE HEADER – says this is one of many products */
-        .store-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #e8e4dc;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+  <!-- Framer Motion via ESM (for production we'd bundle, here we load from CDN for demo) -->
+  <script src="https://unpkg.com/framer-motion@11.0.2/dist/framer-motion.js"></script>
 
-        .store-header .name {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1a1a;
-        }
+  <!-- Chart.js for admin charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-        .store-header .tag {
-            font-size: 14px;
-            font-weight: 400;
-            color: #6b6b6b;
-            background: #f0ede8;
-            padding: 4px 14px;
-            border-radius: 40px;
-        }
+  <style>
+    /* ----- Global Reset & Base ----- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #0a0e1a;
+      color: #e8edf5;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0e1a; }
+    ::-webkit-scrollbar-thumb { background: #2a4a7f; border-radius: 12px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3b6bb0; }
 
-        /* BOOK BADGE */
-        .book-badge {
-            display: inline-block;
-            background: #e8f0e8;
-            color: #2b5e2b;
-            font-size: 13px;
-            font-weight: 600;
-            padding: 6px 16px;
-            border-radius: 40px;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
+    /* ----- Glassmorphism base ----- */
+    .glass {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    .glass-light {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(12px) saturate(1.3);
+      -webkit-backdrop-filter: blur(12px) saturate(1.3);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
 
-        h1 {
-            font-size: 42px;
-            font-weight: 800;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            margin-bottom: 12px;
-            color: #1a1a1a;
-        }
+    /* ----- Animations ----- */
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(1deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    .float-anim { animation: float 6s ease-in-out infinite; }
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 20px rgba(0, 180, 255, 0.15); }
+      50% { box-shadow: 0 0 40px rgba(0, 180, 255, 0.35); }
+      100% { box-shadow: 0 0 20px rgba(0, 180, 255, 0.15); }
+    }
+    .pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
 
-        .subtitle {
-            font-size: 20px;
-            font-weight: 400;
-            color: #4a4a4a;
-            margin-bottom: 30px;
-            border-left: 4px solid #2b5e2b;
-            padding-left: 18px;
-        }
+    /* ----- Particle / DNA background (canvas) ----- */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.5;
+    }
 
-        .author-line {
-            font-size: 16px;
-            color: #6b6b6b;
-            margin-bottom: 30px;
-        }
+    /* ----- Scroll progress bar ----- */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00b4ff, #7b2ffc, #00d4ff);
+      z-index: 9999;
+      width: 0%;
+      transition: width 0.08s ease-out;
+      border-radius: 0 4px 4px 0;
+      box-shadow: 0 0 20px rgba(0, 180, 255, 0.4);
+    }
 
-        .author-line strong {
-            color: #1a1a1a;
-        }
+    /* ----- Nav (sticky + glass) ----- */
+    .nav-glass {
+      background: rgba(10, 14, 26, 0.72);
+      backdrop-filter: blur(20px) saturate(1.6);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
 
-        /* COVER PLACEHOLDER */
-        .cover-placeholder {
-            background: #e8e4dc;
-            border-radius: 16px;
-            padding: 50px 20px;
-            text-align: center;
-            margin: 25px 0 35px 0;
-            border: 2px dashed #c0b8ac;
-        }
+    /* ----- Book cards ----- */
+    .book-card {
+      transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transform-origin: center;
+    }
+    .book-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 0 30px 80px rgba(0, 100, 255, 0.18);
+      border-color: rgba(0, 180, 255, 0.3);
+    }
 
-        .cover-placeholder .icon {
-            font-size: 52px;
-            display: block;
-            margin-bottom: 8px;
-        }
+    /* ----- Typing cursor ----- */
+    .typing-cursor::after {
+      content: '|';
+      animation: blink 1s step-end infinite;
+      color: #00b4ff;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
 
-        .cover-placeholder p {
-            font-size: 14px;
-            color: #5a4f42;
-            margin: 0;
-        }
+    /* ----- Toast container ----- */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 380px;
+      width: 100%;
+    }
+    .toast {
+      padding: 16px 22px;
+      border-radius: 16px;
+      background: rgba(10, 14, 26, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      color: #e8edf5;
+      font-size: 0.95rem;
+      animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-left: 4px solid #00b4ff;
+    }
+    .toast-success { border-left-color: #00d4aa; }
+    .toast-error { border-left-color: #ff4757; }
+    .toast-info { border-left-color: #7b2ffc; }
+    @keyframes slideUp {
+      0% { opacity: 0; transform: translateY(30px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
 
-        .cover-placeholder .small-note {
-            font-size: 12px;
-            color: #8a7f72;
-            margin-top: 4px;
-        }
+    /* ----- Responsive tweaks ----- */
+    @media (max-width: 768px) {
+      .glass { border-radius: 16px; }
+      .book-card:hover { transform: translateY(-4px) scale(1.01); }
+    }
 
-        /* BUTTONS */
-        .btn-primary {
-            display: inline-block;
-            background: #1a1a1a;
-            color: #ffffff;
-            font-weight: 600;
-            font-size: 18px;
-            padding: 16px 44px;
-            border-radius: 60px;
-            text-decoration: none;
-            transition: background 0.2s ease;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
-        }
+    /* Smooth page transitions */
+    .page-transition {
+      animation: fadeSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(16px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
 
-        .btn-primary:hover {
-            background: #2b5e2b;
-        }
+    /* Admin table row hover */
+    .admin-row-hover:hover {
+      background: rgba(0, 180, 255, 0.05);
+    }
 
-        .btn-secondary {
-            display: inline-block;
-            background: transparent;
-            color: #1a1a1a;
-            font-weight: 500;
-            font-size: 15px;
-            padding: 14px 34px;
-            border-radius: 60px;
-            text-decoration: none;
-            border: 1.5px solid #d0d0d0;
-            transition: all 0.2s ease;
-            width: 100%;
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .btn-secondary:hover {
-            border-color: #1a1a1a;
-            background: #f5f5f5;
-        }
-
-        .price-tag {
-            font-size: 32px;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin: 20px 0 6px 0;
-        }
-
-        .price-note {
-            font-size: 14px;
-            color: #7a7a7a;
-            margin-bottom: 20px;
-        }
-
-        /* BENEFITS GRID */
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin: 35px 0 30px 0;
-        }
-
-        .benefit-item {
-            background: #f7f5f2;
-            padding: 14px 18px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1e1e1e;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .benefit-item span {
-            font-size: 18px;
-        }
-
-        /* SECTION TITLES */
-        h2 {
-            font-size: 26px;
-            font-weight: 700;
-            margin: 40px 0 16px 0;
-            letter-spacing: -0.01em;
-        }
-
-        h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin: 24px 0 8px 0;
-        }
-
-        p {
-            font-size: 16px;
-            color: #2e2e2e;
-            margin-bottom: 14px;
-        }
-
-        /* CHAPTER PREVIEW */
-        .chapter-preview {
-            background: #faf8f5;
-            border-radius: 14px;
-            padding: 18px 22px;
-            margin: 10px 0;
-            font-size: 15px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .chapter-preview .num {
-            font-weight: 700;
-            color: #2b5e2b;
-            min-width: 28px;
-        }
-
-        /* EMAIL SIGNUP */
-        .email-section {
-            background: #f0ede8;
-            border-radius: 18px;
-            padding: 30px 28px;
-            margin: 40px 0 20px 0;
-            text-align: center;
-        }
-
-        .email-section h3 {
-            font-size: 20px;
-            margin: 0 0 6px 0;
-        }
-
-        .email-section p {
-            font-size: 14px;
-            color: #4a4a4a;
-            margin-bottom: 16px;
-        }
-
-        .email-input-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .email-input-group input {
-            flex: 1;
-            min-width: 200px;
-            padding: 14px 18px;
-            border-radius: 60px;
-            border: 1px solid #ccc;
-            font-size: 15px;
-            font-family: inherit;
-            outline: none;
-        }
-
-        .email-input-group input:focus {
-            border-color: #2b5e2b;
-        }
-
-        .email-input-group .btn-primary {
-            width: auto;
-            padding: 14px 36px;
-            font-size: 15px;
-        }
-
-        /* FOOTER */
-        .footer {
-            margin-top: 40px;
-            padding-top: 24px;
-            border-top: 1px solid #e8e4dc;
-            text-align: center;
-            font-size: 13px;
-            color: #8a8a8a;
-        }
-
-        .footer .contact {
-            font-size: 12px;
-            color: #aaa;
-            margin-top: 4px;
-        }
-
-        /* MOBILE RESPONSIVE */
-        @media (max-width: 600px) {
-            .container {
-                padding: 28px 18px;
-            }
-
-            .store-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            h1 {
-                font-size: 30px;
-            }
-
-            .subtitle {
-                font-size: 17px;
-                padding-left: 14px;
-            }
-
-            .benefits-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-
-            .btn-primary {
-                font-size: 16px;
-                padding: 15px 24px;
-            }
-
-            .price-tag {
-                font-size: 26px;
-            }
-
-            .email-input-group {
-                flex-direction: column;
-            }
-
-            .email-input-group input {
-                min-width: unset;
-                width: 100%;
-            }
-
-            .email-input-group .btn-primary {
-                width: 100%;
-            }
-        }
-    </style>
+    /* Loader */
+    #loader {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      background: #0a0e1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    #loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .loader-spinner {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 4px solid rgba(0, 180, 255, 0.12);
+      border-top-color: #00b4ff;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
 </head>
 <body>
 
-    <div class="container">
+  <!-- LOADER -->
+  <div id="loader" role="status" aria-label="Loading">
+    <div class="loader-spinner"></div>
+    <span class="text-sm text-white/40 font-light tracking-wider">BISHO'S LAB</span>
+  </div>
 
-        <!-- STORE HEADER – This frames it as ONE of your products -->
-        <div class="store-header">
-            <span class="name">Bishoy Tadros</span>
-            <span class="tag">📦 Digital Store</span>
-        </div>
+  <!-- SCROLL PROGRESS -->
+  <div id="scroll-progress"></div>
 
-        <!-- BOOK BADGE -->
-        <div class="book-badge">📘 Product</div>
+  <!-- PARTICLE CANVAS (background) -->
+  <canvas id="particle-canvas"></canvas>
 
-        <!-- TITLE (this is the ebook title, not the store title) -->
-        <h1>Just Get Started</h1>
-        <div class="subtitle">
-            A No-Fluff Guide to Learning Anything Faster
-        </div>
-        <div class="author-line">
-            By <strong>Bishoy Tadros</strong>
-        </div>
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
 
-        <!-- COVER PLACEHOLDER -->
-        <div class="cover-placeholder">
-            <span class="icon">📖</span>
-            <p><strong>Just Get Started</strong></p>
-            <p style="font-size:15px; color:#3a3228;">A No-Fluff Guide to Learning Anything Faster</p>
-            <p class="small-note">by Bishoy Tadros &bull; 14 pages &bull; PDF</p>
-        </div>
+  <!-- ============================================================ -->
+  <!--  NAVIGATION                                                  -->
+  <!-- ============================================================ -->
+  <nav id="main-nav" class="nav-glass fixed top-0 left-0 w-full z-50 px-4 md:px-8 py-3 transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <!-- Brand -->
+      <a href="#" class="flex items-center gap-2 text-xl font-bold tracking-tight" data-page="home">
+        <span class="text-2xl">🧬</span>
+        <span class="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">Bisho's Lab</span>
+      </a>
 
-        <!-- PRICE & BUY BUTTON ($1) -->
-        <div class="price-tag">$1</div>
-        <div class="price-note">One-time payment &bull; Instant PDF download</div>
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-1 text-sm font-medium">
+        <a href="#" data-page="home" class="nav-link px-3 py-2 rounded-lg text-white/70 hover:text-white transition-colors">Home</a>
+        <a href="#" data-page="about" class="nav-link px-3 py-2 rounded-lg text-white/70 hover:text-white transition-colors">About Me</a>
+        <a href="#" data-page="bshoes" class="nav-link px-3 py-2 rounded-lg text-white/70 hover:text-white transition-colors">B-Shoes Lab</a>
+        <a href="#" data-page="store" class="nav-link px-3 py-2 rounded-lg text-white/70 hover:text-white transition-colors">E-Book Store</a>
+        <a href="#" data-page="research" class="nav-link px-3 py-2 rounded-lg text-white/70 hover:text-white transition-colors">Research</a>
+        <a href="#" data-page="gallery" class="nav-link px-3 py-2 rounded-lg text-white/70 hover:text-white transition-colors">Gallery</a>
+        <a href="#" data-page="testimonials" class="nav-link px-3 py-2 rounded-lg text-white/70 hover:text-white transition-colors">Testimonials</a>
+        <a href="#" data-page="faq" class="nav-link px-3 py-2 rounded-lg text-white/70 hover:text-white transition-colors">FAQ</a>
+        <a href="#" data-page="contact" class="nav-link px-3 py-2 rounded-lg text-white/70 hover:text-white transition-colors">Contact</a>
+        <!-- Auth / Admin -->
+        <a href="#" data-page="login" class="nav-link px-4 py-2 rounded-xl bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 transition-colors border border-cyan-500/20">Sign In</a>
+      </div>
 
-        <!-- Replace the href below with your actual payment link (Gumroad, Beacons, PayPal, etc.) -->
-        <a href="#" class="btn-primary">📥 Buy Now – Get Instant Access</a>
-        <a href="#" class="btn-secondary">🔍 Preview First 3 Pages</a>
-
-        <!-- BENEFITS -->
-        <div class="benefits-grid">
-            <div class="benefit-item"><span>⚡</span> 10 actionable hacks</div>
-            <div class="benefit-item"><span>🧠</span> ADHD-friendly layout</div>
-            <div class="benefit-item"><span>📋</span> 7-day tracker included</div>
-            <div class="benefit-item"><span>🎯</span> 20-minute daily sessions</div>
-            <div class="benefit-item"><span>🧘</span> No-fluff, calm tone</div>
-            <div class="benefit-item"><span>📱</span> Read on any device</div>
-        </div>
-
-        <!-- WHAT'S INSIDE -->
-        <h2>What's Inside</h2>
-        <p>
-            This book is built around one question: <strong>what's the smallest next step that actually moves you forward?</strong>
-            No theory. No fluff. Just a repeatable system to get unstuck.
-        </p>
-
-        <div class="chapter-preview"><span class="num">1.</span> Why This Matters – The hidden cost of quitting early</div>
-        <div class="chapter-preview"><span class="num">2.</span> The Biggest Myths – 4 beliefs that trap beginners</div>
-        <div class="chapter-preview"><span class="num">3.</span> What You Actually Need – Minimal gear, maximum progress</div>
-        <div class="chapter-preview"><span class="num">4.</span> The 5-Step System – Your repeatable session template</div>
-        <div class="chapter-preview"><span class="num">5.</span> Real Examples – Marcus (new dad) &amp; Priya (coder)</div>
-        <div class="chapter-preview"><span class="num">6.</span> Common Problems – Quick fixes for distraction &amp; guilt</div>
-        <div class="chapter-preview"><span class="num">7.</span> Making It Stick – 3 habits that keep you going</div>
-        <div class="chapter-preview"><span class="num">8.</span> Your First 7 Days – Day-by-day action plan</div>
-        <div class="chapter-preview" style="background:#e8f0e8; font-weight:500;">📋 Bonus: 7-Day Tracker &amp; Cheat Sheet included</div>
-
-        <!-- FINAL CTA -->
-        <h2 style="text-align:center; margin-top: 40px;">Ready to finally get unstuck?</h2>
-        <p style="text-align:center; color:#4a4a4a; max-width:500px; margin: 0 auto 24px auto;">
-            Stop scrolling. Start doing. One small step today changes everything.
-        </p>
-
-        <div class="price-tag" style="text-align:center;">$1</div>
-        <div class="price-note" style="text-align:center;">PDF &bull; Instant download &bull; No fluff</div>
-
-        <a href="#" class="btn-primary" style="max-width:400px; display:block; margin: 10px auto 0 auto;">📥 Buy Now – Get Instant Access</a>
-
-        <!-- EMAIL SIGNUP BONUS -->
-        <div class="email-section">
-            <h3>📬 Want a free preview?</h3>
-            <p>Enter your email and I'll send you the first 3 chapters + the 7-Day Tracker PDF.</p>
-            <div class="email-input-group">
-                <input type="email" placeholder="Your best email" />
-                <button class="btn-primary" style="width:auto; padding:14px 28px; font-size:15px;">Send Free Preview</button>
-            </div>
-            <p style="font-size:12px; color:#7a7a7a; margin-top:12px;">No spam. Unsubscribe anytime.</p>
-        </div>
-
-        <!-- FOOTER with your email -->
-        <div class="footer">
-            <p style="margin-bottom:4px;">&copy; 2026 Bishoy Tadros &bull; Just Get Started</p>
-            <p style="font-size:12px; color:#aaa;">This is one of many products in my store.</p>
-            <p class="contact">📧 bishoytadros2004@gmail.com</p>
-        </div>
-
+      <!-- Mobile menu toggle -->
+      <button id="mobile-toggle" class="md:hidden text-white/70 hover:text-white p-2 rounded-lg" aria-label="Toggle menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
     </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden mt-3 pb-4 flex flex-col gap-1 text-sm font-medium border-t border-white/5 pt-4">
+      <a href="#" data-page="home" class="nav-link px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5">Home</a>
+      <a href="#" data-page="about" class="nav-link px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5">About Me</a>
+      <a href="#" data-page="bshoes" class="nav-link px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5">B-Shoes Lab</a>
+      <a href="#" data-page="store" class="nav-link px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5">E-Book Store</a>
+      <a href="#" data-page="research" class="nav-link px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5">Research</a>
+      <a href="#" data-page="gallery" class="nav-link px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5">Gallery</a>
+      <a href="#" data-page="testimonials" class="nav-link px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5">Testimonials</a>
+      <a href="#" data-page="faq" class="nav-link px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5">FAQ</a>
+      <a href="#" data-page="contact" class="nav-link px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5">Contact</a>
+      <a href="#" data-page="login" class="nav-link px-4 py-2 rounded-xl bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 text-center mt-1">Sign In</a>
+    </div>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!--  MAIN CONTENT (SPA-style page switching)                     -->
+  <!-- ============================================================ -->
+  <main id="app-root" class="relative z-10 pt-20 min-h-screen">
+
+    <!-- ==================== HOME ==================== -->
+    <section id="page-home" class="page page-transition">
+      <!-- Hero -->
+      <div class="relative min-h-[90vh] flex items-center justify-center px-4 overflow-hidden">
+        <div class="absolute inset-0 pointer-events-none">
+          <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+          <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative z-10 max-w-4xl mx-auto text-center">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-white/60 mb-6 backdrop-blur-sm">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            Pioneering the Future of Life Sciences
+          </div>
+          <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight">
+            <span class="bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent">
+              Empowering Biotechnology,
+            </span><br />
+            <span class="bg-gradient-to-r from-blue-300 via-purple-300 to-cyan-300 bg-clip-text text-transparent">
+              AI, and Scientific Innovation.
+            </span>
+          </h1>
+          <p class="mt-6 text-lg md:text-xl text-white/50 max-w-2xl mx-auto font-light leading-relaxed">
+            Bisho's Lab bridges cutting-edge research, digital education, and next-generation tools
+            to accelerate discovery and democratise science.
+          </p>
+          <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <a href="#" data-page="store" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all hover:scale-[1.02] active:scale-[0.98]">
+              Explore Books
+            </a>
+            <a href="#" data-page="about" class="px-8 py-3.5 rounded-2xl glass-light text-white/80 hover:text-white transition-all hover:bg-white/10">
+              About Me
+            </a>
+          </div>
+        </div>
+
+        <!-- Animated DNA / floating elements -->
+        <div class="absolute bottom-8 left-0 w-full flex justify-center gap-6 text-4xl opacity-20 pointer-events-none select-none">
+          <span class="float-anim" style="animation-delay:0s">🧬</span>
+          <span class="float-anim" style="animation-delay:0.8s">⚛️</span>
+          <span class="float-anim" style="animation-delay:1.6s">🧪</span>
+          <span class="float-anim" style="animation-delay:2.4s">🧫</span>
+          <span class="float-anim" style="animation-delay:3.2s">🔬</span>
+          <span class="float-anim" style="animation-delay:4.0s">🧠</span>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="max-w-6xl mx-auto px-4 pb-20 -mt-10">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="glass p-6 text-center stat-card">
+            <div class="text-3xl font-bold text-cyan-400 stat-number" data-target="12">0</div>
+            <div class="text-sm text-white/40 mt-1">Published E-books</div>
+          </div>
+          <div class="glass p-6 text-center stat-card">
+            <div class="text-3xl font-bold text-blue-400 stat-number" data-target="8">0</div>
+            <div class="text-sm text-white/40 mt-1">Research Projects</div>
+          </div>
+          <div class="glass p-6 text-center stat-card">
+            <div class="text-3xl font-bold text-purple-400 stat-number" data-target="1420">0</div>
+            <div class="text-sm text-white/40 mt-1">Happy Readers</div>
+          </div>
+          <div class="glass p-6 text-center stat-card">
+            <div class="text-3xl font-bold text-cyan-400 stat-number" data-target="3800">0</div>
+            <div class="text-sm text-white/40 mt-1">Downloads</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ABOUT ME ==================== -->
+    <section id="page-about" class="page page-transition hidden">
+      <div class="max-w-6xl mx-auto px-4 py-12">
+        <h2 class="text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">About Me</h2>
+        <p class="text-white/40 mb-12">Biotechnologist · AI Researcher · Scientific Writer</p>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- Photo placeholder -->
+          <div class="md:col-span-1">
+            <div class="glass p-2 rounded-3xl overflow-hidden">
+              <div class="aspect-square bg-gradient-to-br from-cyan-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center text-6xl">
+                👨‍🔬
+              </div>
+            </div>
+            <div class="mt-6 glass p-6">
+              <h4 class="font-semibold text-white/90">Contact</h4>
+              <p class="text-sm text-white/40 mt-2">📧 bishop@bishoslab.com</p>
+              <p class="text-sm text-white/40">📱 +20 108 010 7649</p>
+            </div>
+          </div>
+
+          <!-- Bio + details -->
+          <div class="md:col-span-2 space-y-6">
+            <div class="glass p-8">
+              <h3 class="text-xl font-semibold text-white/90">Biography</h3>
+              <p class="text-white/60 mt-3 leading-relaxed">
+                I'm a biotechnologist and AI researcher passionate about decoding life's complexity through
+                computational biology and machine learning. With a foundation in molecular biology and
+                bioinformatics, I bridge wet-lab science and dry-lab innovation to solve real-world problems
+                in health, agriculture, and environmental sustainability.
+              </p>
+            </div>
+
+            <div class="glass p-8">
+              <h3 class="text-xl font-semibold text-white/90">Research Interests</h3>
+              <div class="flex flex-wrap gap-2 mt-4">
+                <span class="px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-sm">🧬 Biotechnology</span>
+                <span class="px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-sm">🧪 Bioinformatics</span>
+                <span class="px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm">🤖 AI / ML</span>
+                <span class="px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-sm">📖 Scientific Writing</span>
+                <span class="px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-300 text-sm">🧫 Genomics</span>
+              </div>
+            </div>
+
+            <div class="glass p-8">
+              <h3 class="text-xl font-semibold text-white/90">Academic Timeline</h3>
+              <div class="mt-4 space-y-4">
+                <div class="flex items-start gap-4">
+                  <div class="w-3 h-3 rounded-full bg-cyan-400 mt-1.5"></div>
+                  <div><span class="text-cyan-400 font-medium">2023 – Present</span><p class="text-white/60 text-sm">PhD in Biotechnology · AI-Driven Drug Discovery</p></div>
+                </div>
+                <div class="flex items-start gap-4">
+                  <div class="w-3 h-3 rounded-full bg-blue-400 mt-1.5"></div>
+                  <div><span class="text-blue-400 font-medium">2020 – 2023</span><p class="text-white/60 text-sm">M.Sc. Bioinformatics · Computational Genomics</p></div>
+                </div>
+                <div class="flex items-start gap-4">
+                  <div class="w-3 h-3 rounded-full bg-purple-400 mt-1.5"></div>
+                  <div><span class="text-purple-400 font-medium">2016 – 2020</span><p class="text-white/60 text-sm">B.Sc. Biotechnology · Molecular Biology</p></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass p-8">
+              <h3 class="text-xl font-semibold text-white/90">Skills & Certifications</h3>
+              <div class="flex flex-wrap gap-3 mt-4">
+                <span class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm">Python · R · SQL</span>
+                <span class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm">TensorFlow · PyTorch</span>
+                <span class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm">CRISPR · NGS</span>
+                <span class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm">AWS · Docker</span>
+                <span class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm">Scientific Writing</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== B-SHOES LAB ==================== -->
+    <section id="page-bshoes" class="page page-transition hidden">
+      <div class="max-w-6xl mx-auto px-4 py-12">
+        <h2 class="text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">B-Shoes Lab</h2>
+        <p class="text-white/40 mb-12">A scientific platform for biotechnology, AI, and digital learning.</p>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="glass p-8 hover:border-cyan-500/30 transition-all">
+            <div class="text-4xl mb-4">🎯</div>
+            <h3 class="text-xl font-semibold text-white/90">Mission</h3>
+            <p class="text-white/50 mt-3 text-sm leading-relaxed">Democratise scientific knowledge by providing accessible, high-quality digital resources and tools that empower researchers, students, and innovators worldwide.</p>
+          </div>
+          <div class="glass p-8 hover:border-blue-500/30 transition-all">
+            <div class="text-4xl mb-4">👁️</div>
+            <h3 class="text-xl font-semibold text-white/90">Vision</h3>
+            <p class="text-white/50 mt-3 text-sm leading-relaxed">A world where biotechnology and AI converge to solve humanity's greatest challenges — from personalised medicine to sustainable agriculture.</p>
+          </div>
+          <div class="glass p-8 hover:border-purple-500/30 transition-all">
+            <div class="text-4xl mb-4">⚡</div>
+            <h3 class="text-xl font-semibold text-white/90">Goals</h3>
+            <p class="text-white/50 mt-3 text-sm leading-relaxed">Publish 50+ e-books, launch open-source AI tools for biology, build a global community of 10,000+ learners, and foster interdisciplinary collaboration.</p>
+          </div>
+        </div>
+
+        <div class="mt-12 glass p-8">
+          <h3 class="text-xl font-semibold text-white/90">Future Projects</h3>
+          <div class="grid sm:grid-cols-2 gap-4 mt-4">
+            <div class="bg-white/5 rounded-xl p-5 border border-white/5">
+              <span class="text-cyan-400 font-medium">🧬 AI-Powered Drug Repurposing</span>
+              <p class="text-white/40 text-sm mt-1">Using deep learning to identify new uses for existing compounds.</p>
+            </div>
+            <div class="bg-white/5 rounded-xl p-5 border border-white/5">
+              <span class="text-blue-400 font-medium">📚 Digital Science Library</span>
+              <p class="text-white/40 text-sm mt-1">An open-access repository of interactive e-books and lab protocols.</p>
+            </div>
+            <div class="bg-white/5 rounded-xl p-5 border border-white/5">
+              <span class="text-purple-400 font-medium">🧪 CRISPR Diagnostic Platform</span>
+              <p class="text-white/40 text-sm mt-1">Rapid, affordable pathogen detection using CRISPR-Cas technology.</p>
+            </div>
+            <div class="bg-white/5 rounded-xl p-5 border border-white/5">
+              <span class="text-green-400 font-medium">🌍 Global Bioinformatics Hub</span>
+              <p class="text-white/40 text-sm mt-1">Community-driven platform for sharing genomic data and tools.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== E-BOOK STORE ==================== -->
+    <section id="page-store" class="page page-transition hidden">
+      <div class="max-w-6xl mx-auto px-4 py-12">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <div>
+            <h2 class="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">E-Book Store</h2>
+            <p class="text-white/40">Explore scientific e-books — each for <strong class="text-cyan-300">50 EGP</strong></p>
+          </div>
+          <div class="flex items-center gap-3">
+            <input type="text" id="book-search" placeholder="Search books..." class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30 focus:outline-none focus:border-cyan-500/50 w-48 md:w-64" />
+            <select id="book-category-filter" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 focus:outline-none focus:border-cyan-500/50">
+              <option value="all">All Categories</option>
+              <option value="biotechnology">Biotechnology</option>
+              <option value="bioinformatics">Bioinformatics</option>
+              <option value="ai">Artificial Intelligence</option>
+              <option value="lab-techniques">Lab Techniques</option>
+              <option value="wellbeing">Wellbeing</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Book grid -->
+        <div id="book-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Books rendered by JS -->
+        </div>
+
+        <!-- Admin: Upload button (visible when logged in as admin) -->
+        <div id="admin-upload-area" class="mt-12 hidden">
+          <div class="glass p-8 border border-dashed border-cyan-500/30">
+            <h3 class="text-lg font-semibold text-white/90">📤 Admin — Upload New Book</h3>
+            <div class="grid sm:grid-cols-2 gap-4 mt-4">
+              <input type="text" id="book-title" placeholder="Title" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30" />
+              <input type="text" id="book-description" placeholder="Description" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30" />
+              <input type="number" id="book-pages" placeholder="Pages" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30" />
+              <select id="book-category" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80">
+                <option value="biotechnology">Biotechnology</option>
+                <option value="bioinformatics">Bioinformatics</option>
+                <option value="ai">Artificial Intelligence</option>
+                <option value="lab-techniques">Lab Techniques</option>
+                <option value="wellbeing">Wellbeing</option>
+              </select>
+              <input type="file" id="book-pdf" accept=".pdf" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-cyan-500/20 file:text-cyan-300" />
+              <input type="file" id="book-cover" accept="image/*" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-cyan-500/20 file:text-cyan-300" />
+            </div>
+            <button id="upload-book-btn" class="mt-4 px-6 py-2.5 rounded-xl bg-cyan-500 text-white font-medium hover:bg-cyan-600 transition-all">Upload Book</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== RESEARCH ==================== -->
+    <section id="page-research" class="page page-transition hidden">
+      <div class="max-w-6xl mx-auto px-4 py-12">
+        <h2 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Research</h2>
+        <p class="text-white/40 mb-12">Publications, projects, and scientific interests.</p>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="glass p-8 hover:border-cyan-500/30 transition-all">
+            <div class="text-3xl mb-3">📄</div>
+            <h3 class="text-lg font-semibold text-white/90">Deep Learning for Protein Structure Prediction</h3>
+            <p class="text-white/50 text-sm mt-2">A novel attention-based architecture achieving SOTA on CASP14 benchmarks.</p>
+            <span class="inline-block mt-3 text-xs px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">2024</span>
+          </div>
+          <div class="glass p-8 hover:border-blue-500/30 transition-all">
+            <div class="text-3xl mb-3">🧬</div>
+            <h3 class="text-lg font-semibold text-white/90">CRISPR-Cas9 Off-Target Prediction</h3>
+            <p class="text-white/50 text-sm mt-2">Machine learning model to predict and minimise off-target effects in human cells.</p>
+            <span class="inline-block mt-3 text-xs px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">2023</span>
+          </div>
+          <div class="glass p-8 hover:border-purple-500/30 transition-all">
+            <div class="text-3xl mb-3">🧫</div>
+            <h3 class="text-lg font-semibold text-white/90">Single-Cell Transcriptomics Atlas</h3>
+            <p class="text-white/50 text-sm mt-2">Comprehensive atlas of 1.2M cells across 20 human tissues using 10x Genomics.</p>
+            <span class="inline-block mt-3 text-xs px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">2023</span>
+          </div>
+          <div class="glass p-8 hover:border-green-500/30 transition-all">
+            <div class="text-3xl mb-3">🤖</div>
+            <h3 class="text-lg font-semibold text-white/90">AI-Driven Drug Repurposing for Rare Diseases</h3>
+            <p class="text-white/50 text-sm mt-2">Graph neural network identifies candidate compounds for orphan diseases.</p>
+            <span class="inline-block mt-3 text-xs px-3 py-1 rounded-full bg-green-500/10 text-green-300 border border-green-500/20">2024</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== GALLERY ==================== -->
+    <section id="page-gallery" class="page page-transition hidden">
+      <div class="max-w-6xl mx-auto px-4 py-12">
+        <h2 class="text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Gallery</h2>
+        <p class="text-white/40 mb-8">A visual journey through science and innovation.</p>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div class="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center text-5xl hover:scale-[1.02] transition-all cursor-pointer">🧬</div>
+          <div class="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center text-5xl hover:scale-[1.02] transition-all cursor-pointer">🔬</div>
+          <div class="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center text-5xl hover:scale-[1.02] transition-all cursor-pointer">🧪</div>
+          <div class="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-green-500/20 to-cyan-500/20 flex items-center justify-center text-5xl hover:scale-[1.02] transition-all cursor-pointer">🧫</div>
+          <div class="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center text-5xl hover:scale-[1.02] transition-all cursor-pointer">🧠</div>
+          <div class="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center text-5xl hover:scale-[1.02] transition-all cursor-pointer">⚛️</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TESTIMONIALS ==================== -->
+    <section id="page-testimonials" class="page page-transition hidden">
+      <div class="max-w-5xl mx-auto px-4 py-12">
+        <h2 class="text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Testimonials</h2>
+        <p class="text-white/40 mb-12">What readers and collaborators say.</p>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="glass p-8">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="text-3xl">👩‍🔬</span>
+              <div><p class="font-semibold text-white/90">Dr. Sarah El-Masry</p><p class="text-xs text-white/30">Research Scientist, NIH</p></div>
+            </div>
+            <p class="text-white/60 text-sm leading-relaxed">"Bisho's Lab e-books are exceptional. The clarity and depth of the molecular biology content helped my team rapidly upskill in CRISPR techniques."</p>
+          </div>
+          <div class="glass p-8">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="text-3xl">🧑‍💻</span>
+              <div><p class="font-semibold text-white/90">Ahmed Kamal</p><p class="text-xs text-white/30">Bioinformatics Engineer</p></div>
+            </div>
+            <p class="text-white/60 text-sm leading-relaxed">"The AI in Genomics book is a masterpiece. Practical, code-first, and deeply insightful. Already recommended it to my entire team."</p>
+          </div>
+          <div class="glass p-8">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="text-3xl">🧑‍🎓</span>
+              <div><p class="font-semibold text-white/90">Layla Nasser</p><p class="text-xs text-white/30">PhD Student, Cambridge</p></div>
+            </div>
+            <p class="text-white/60 text-sm leading-relaxed">"I've read countless scientific e-books, but Bisho's Lab stands out. Beautiful design, clear explanations, and the right amount of depth."</p>
+          </div>
+          <div class="glass p-8">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="text-3xl">👨‍🏫</span>
+              <div><p class="font-semibold text-white/90">Prof. Michael Chen</p><p class="text-xs text-white/30">Stanford University</p></div>
+            </div>
+            <p class="text-white/60 text-sm leading-relaxed">"A remarkable resource for both students and seasoned researchers. The integration of biotech and AI is exactly what the field needs."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== FAQ ==================== -->
+    <section id="page-faq" class="page page-transition hidden">
+      <div class="max-w-4xl mx-auto px-4 py-12">
+        <h2 class="text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">FAQ</h2>
+        <p class="text-white/40 mb-10">Frequently asked questions about Bisho's Lab and the e-book store.</p>
+
+        <div class="space-y-3" id="faq-container">
+          <div class="glass overflow-hidden">
+            <button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between text-white/90 font-medium hover:bg-white/5 transition-colors">
+              <span>How do I purchase an e-book?</span>
+              <span class="text-cyan-400 text-xl">+</span>
+            </button>
+            <div class="faq-answer px-6 pb-4 text-white/50 text-sm leading-relaxed hidden">You can purchase any e-book for 50 EGP via Vodafone Cash or Visa/Mastercard. After payment confirmation, you'll get instant download access.</div>
+          </div>
+          <div class="glass overflow-hidden">
+            <button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between text-white/90 font-medium hover:bg-white/5 transition-colors">
+              <span>What formats are the e-books in?</span>
+              <span class="text-cyan-400 text-xl">+</span>
+            </button>
+            <div class="faq-answer px-6 pb-4 text-white/50 text-sm leading-relaxed hidden">All e-books are provided as high-quality PDFs, optimized for reading on any device — from phones to desktops.</div>
+          </div>
+          <div class="glass overflow-hidden">
+            <button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between text-white/90 font-medium hover:bg-white/5 transition-colors">
+              <span>Can I request a refund?</span>
+              <span class="text-cyan-400 text-xl">+</span>
+            </button>
+            <div class="faq-answer px-6 pb-4 text-white/50 text-sm leading-relaxed hidden">Yes, we offer a 14-day satisfaction guarantee. Contact us with your order details and we'll process your refund.</div>
+          </div>
+          <div class="glass overflow-hidden">
+            <button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between text-white/90 font-medium hover:bg-white/5 transition-colors">
+              <span>Do you offer academic discounts?</span>
+              <span class="text-cyan-400 text-xl">+</span>
+            </button>
+            <div class="faq-answer px-6 pb-4 text-white/50 text-sm leading-relaxed hidden">Yes! Students and educators receive 20% off on all e-books. Email us with your academic ID for a discount code.</div>
+          </div>
+          <div class="glass overflow-hidden">
+            <button class="faq-toggle w-full px-6 py-4 text-left flex items-center justify-between text-white/90 font-medium hover:bg-white/5 transition-colors">
+              <span>How do I access my purchased books?</span>
+              <span class="text-cyan-400 text-xl">+</span>
+            </button>
+            <div class="faq-answer px-6 pb-4 text-white/50 text-sm leading-relaxed hidden">After purchase, you can download your books anytime from your account dashboard under "My Purchases".</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CONTACT ==================== -->
+    <section id="page-contact" class="page page-transition hidden">
+      <div class="max-w-6xl mx-auto px-4 py-12">
+        <h2 class="text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Contact</h2>
+        <p class="text-white/40 mb-10">We'd love to hear from you.</p>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="space-y-6">
+            <div class="glass p-6">
+              <p class="text-white/40 text-sm">📞 Phone</p>
+              <p class="text-white/90 font-medium">+20 108 010 7649</p>
+            </div>
+            <div class="glass p-6">
+              <p class="text-white/40 text-sm">✉️ Email</p>
+              <p class="text-white/90 font-medium">bishop@bishoslab.com</p>
+            </div>
+            <div class="glass p-6">
+              <p class="text-white/40 text-sm">📍 Location</p>
+              <p class="text-white/90 font-medium">Cairo, Egypt</p>
+            </div>
+            <div class="flex gap-4 text-2xl">
+              <a href="#" class="text-white/30 hover:text-cyan-400 transition-colors">🐦</a>
+              <a href="#" class="text-white/30 hover:text-blue-400 transition-colors">💼</a>
+              <a href="#" class="text-white/30 hover:text-purple-400 transition-colors">📸</a>
+              <a href="#" class="text-white/30 hover:text-red-400 transition-colors">▶️</a>
+            </div>
+          </div>
+
+          <div class="glass p-8">
+            <h3 class="text-lg font-semibold text-white/90 mb-4">Send a Message</h3>
+            <form id="contact-form" class="space-y-4">
+              <input type="text" placeholder="Your Name" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30 focus:outline-none focus:border-cyan-500/50" required />
+              <input type="email" placeholder="Email Address" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30 focus:outline-none focus:border-cyan-500/50" required />
+              <input type="text" placeholder="Subject" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30 focus:outline-none focus:border-cyan-500/50" />
+              <textarea rows="4" placeholder="Your Message" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30 focus:outline-none focus:border-cyan-500/50 resize-none"></textarea>
+              <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/25 transition-all">Send Message</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Map placeholder -->
+        <div class="mt-10 glass p-2 rounded-3xl overflow-hidden">
+          <div class="w-full h-48 md:h-64 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 rounded-2xl flex items-center justify-center text-white/30 text-sm">
+            🗺️ Google Maps placeholder — Cairo, Egypt
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== LOGIN (placeholder) ==================== -->
+    <section id="page-login" class="page page-transition hidden">
+      <div class="max-w-md mx-auto px-4 py-20">
+        <div class="glass p-8">
+          <h2 class="text-2xl font-bold text-white/90 mb-6">Sign In</h2>
+          <form id="login-form" class="space-y-4">
+            <input type="email" placeholder="Email" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30 focus:outline-none focus:border-cyan-500/50" />
+            <input type="password" placeholder="Password" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/30 focus:outline-none focus:border-cyan-500/50" />
+            <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/25 transition-all">Sign In</button>
+          </form>
+          <p class="text-center text-white/30 text-sm mt-4">Demo: admin@bishoslab.com / password123</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================ -->
+  <!--  FOOTER                                                      -->
+  <!-- ============================================================ -->
+  <footer class="relative z-10 border-t border-white/5 mt-20 py-8 px-4">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-sm text-white/30">
+      <span>© 2026 Bisho's Lab — Biotechnology · AI · Scientific Innovation</span>
+      <span class="flex items-center gap-4">
+        <a href="#" data-page="home" class="hover:text-white/60 transition-colors">Home</a>
+        <a href="#" data-page="store" class="hover:text-white/60 transition-colors">Store</a>
+        <a href="#" data-page="contact" class="hover:text-white/60 transition-colors">Contact</a>
+      </span>
+    </div>
+  </footer>
+
+  <!-- ============================================================ -->
+  <!--  JAVASCRIPT — Full SPA + Admin + Books + Payment + Animations -->
+  <!-- ============================================================ -->
+  <script>
+    (function() {
+      'use strict';
+
+      // -------- DATA STORE (in-memory, demo) --------
+      let books = [
+        { id: 1, title: 'Molecular Biology Lab Techniques', description: 'PCR, Western blot, CRISPR, and more.', pages: 168, category: 'lab-techniques', price: 50, cover: '🧬', pdf: 'molbio_lab.pdf' },
+        { id: 2, title: 'Wellbeing & Social Anxiety', description: 'Evidence-based strategies for mental wellness.', pages: 132, category: 'wellbeing', price: 50, cover: '🧠', pdf: 'wellbeing_social.pdf' },
+        { id: 3, title: 'Cancer Biology Essentials', description: 'Hallmarks, genetics, and therapeutics.', pages: 210, category: 'biotechnology', price: 50, cover: '🧫', pdf: 'cancer_bio.pdf' },
+        { id: 4, title: 'How to Become a Human Being', description: 'Vulnerability, connection, grief, and purpose.', pages: 144, category: 'wellbeing', price: 50, cover: '💫', pdf: 'human_being.pdf' },
+        { id: 5, title: 'Just Get Started', description: 'A no-fluff guide to learning anything faster.', pages: 96, category: 'ai', price: 50, cover: '🚀', pdf: 'just_started.pdf' },
+        { id: 6, title: 'Bioinformatics with Python', description: 'From sequence analysis to machine learning.', pages: 256, category: 'bioinformatics', price: 50, cover: '🐍', pdf: 'bioinfo_py.pdf' },
+      ];
+
+      let currentUser = null; // { email, isAdmin }
+      let cart = [];
+
+      // -------- DOM refs --------
+      const $ = (sel) => document.querySelector(sel);
+      const $$ = (sel) => document.querySelectorAll(sel);
+
+      const appRoot = $('#app-root');
+      const pages = {
+        home: $('#page-home'),
+        about: $('#page-about'),
+        bshoes: $('#page-bshoes'),
+        store: $('#page-store'),
+        research: $('#page-research'),
+        gallery: $('#page-gallery'),
+        testimonials: $('#page-testimonials'),
+        faq: $('#page-faq'),
+        contact: $('#page-contact'),
+        login: $('#page-login'),
+      };
+
+      // -------- Navigation --------
+      function navigate(pageId) {
+        // Hide all pages
+        Object.values(pages).forEach(p => p.classList.add('hidden'));
+        // Show target
+        const target = pages[pageId];
+        if (target) {
+          target.classList.remove('hidden');
+          target.classList.remove('page-transition');
+          // re-trigger transition
+          void target.offsetWidth;
+          target.classList.add('page-transition');
+        }
+        // Update nav active state
+        $$('.nav-link').forEach(el => {
+          el.classList.remove('text-white', 'bg-white/5');
+          el.classList.add('text-white/70');
+        });
+        $$(`.nav-link[data-page="${pageId}"]`).forEach(el => {
+          el.classList.remove('text-white/70');
+          el.classList.add('text-white', 'bg-white/5');
+        });
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Close mobile menu
+        $('#mobile-menu').classList.add('hidden');
+        // Update URL hash
+        if (pageId !== 'home') history.pushState({ page: pageId }, '', '#' + pageId);
+        else history.pushState({ page: 'home' }, '', '#');
+        // Trigger stats animation if home
+        if (pageId === 'home') animateStats();
+        // Render store if store
+        if (pageId === 'store') renderBooks();
+        // Show admin upload if admin
+        const isAdmin = currentUser && currentUser.isAdmin;
+        $('#admin-upload-area').classList.toggle('hidden', !isAdmin);
+      }
+
+      // -------- Event listeners for nav --------
+      $$('.nav-link, [data-page]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          const page = el.dataset.page;
+          if (page) navigate(page);
+        });
+      });
+
+      // Mobile toggle
+      $('#mobile-toggle').addEventListener('click', () => {
+        $('#mobile-menu').classList.toggle('hidden');
+      });
+
+      // -------- Toast system --------
+      function showToast(message, type = 'info') {
+        const container = $('#toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `<span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(40px)'; setTimeout(() => toast.remove(), 400); }, 3500);
+      }
+
+      // -------- Scroll progress --------
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        $('#scroll-progress').style.width = progress + '%';
+      });
+
+      // -------- Particle background (canvas) --------
+      const canvas = $('#particle-canvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let w, h;
+
+      function resizeCanvas() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      class Particle {
+        constructor() { this.reset(); }
+        reset() {
+          this.x = Math.random() * w;
+          this.y = Math.random() * h;
+          this.vx = (Math.random() - 0.5) * 0.4;
+          this.vy = (Math.random() - 0.5) * 0.4;
+          this.r = 2 + Math.random() * 3;
+          this.a = 0.2 + Math.random() * 0.3;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 0 || this.x > w) this.vx *= -1;
+          if (this.y < 0 || this.y > h) this.vy *= -1;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(100, 200, 255, ${this.a})`;
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => { p.update(); p.draw(); });
+        // Draw connections
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 150) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(100, 200, 255, ${0.08 * (1 - dist / 150)})`;
+              ctx.lineWidth = 0.6;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(drawParticles);
+      }
+      drawParticles();
+
+      // -------- Stats animation (counter) --------
+      let statsAnimated = false;
+
+      function animateStats() {
+        if (statsAnimated) return;
+        statsAnimated = true;
+        const counters = $$('.stat-number');
+        counters.forEach(counter => {
+          const target = parseInt(counter.dataset.target);
+          const duration = 2000;
+          const start = performance.now();
+          function update(now) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            counter.textContent = Math.floor(eased * target);
+            if (progress < 1) requestAnimationFrame(update);
+            else counter.textContent = target;
+          }
+          requestAnimationFrame(update);
+        });
+      }
+
+      // -------- Book store rendering --------
+      function renderBooks(filter = 'all', search = '') {
+        const grid = $('#book-grid');
+        let filtered = books;
+        if (filter !== 'all') filtered = filtered.filter(b => b.category === filter);
+        if (search.trim()) {
+          const s = search.toLowerCase().trim();
+          filtered = filtered.filter(b => b.title.toLowerCase().includes(s) || b.description.toLowerCase().includes(s));
+        }
+        if (filtered.length === 0) {
+          grid.innerHTML = `<div class="col-span-full text-center text-white/40 py-12">No books found.</div>`;
+          return;
+        }
+        grid.innerHTML = filtered.map(b => `
+          <div class="book-card glass p-6 flex flex-col" data-id="${b.id}">
+            <div class="text-5xl mb-3">${b.cover || '📘'}</div>
+            <h3 class="text-lg font-semibold text-white/90">${b.title}</h3>
+            <p class="text-white/50 text-sm mt-1 flex-1">${b.description}</p>
+            <div class="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
+              <span class="text-cyan-400 font-bold">${b.price} EGP</span>
+              <span class="text-xs text-white/30">${b.pages} pages</span>
+            </div>
+            <div class="flex gap-2 mt-3">
+              <button class="buy-btn flex-1 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-medium hover:shadow-lg hover:shadow-cyan-500/25 transition-all" data-id="${b.id}">Buy Now</button>
+              <button class="preview-btn py-2 px-4 rounded-xl bg-white/5 border border-white/10 text-white/60 text-sm hover:bg-white/10 transition-all" data-id="${b.id}">👁️</button>
+            </div>
+          </div>
+        `).join('');
+
+        // Buy handlers
+        grid.querySelectorAll('.buy-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = parseInt(btn.dataset.id);
+            const book = books.find(b => b.id === id);
+            if (book) initiatePurchase(book);
+          });
+        });
+        // Preview handlers
+        grid.querySelectorAll('.preview-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = parseInt(btn.dataset.id);
+            const book = books.find(b => b.id === id);
+            if (book) showToast(`📖 ${book.title} — Preview: ${book.description.substring(0, 60)}...`, 'info');
+          });
+        });
+      }
+
+      // -------- Purchase flow --------
+      function initiatePurchase(book) {
+        if (!currentUser) {
+          showToast('Please sign in to purchase books.', 'error');
+          navigate('login');
+          return;
+        }
+        // Simple purchase dialog (Vodafone Cash or Visa)
+        const choice = confirm(`Buy "${book.title}" for ${book.price} EGP?\n\nClick OK for Vodafone Cash (${book.price} EGP to +20 108 010 7649)\nCancel for Visa/Mastercard (demo)`);
+        if (choice) {
+          // Vodafone Cash
+          showToast(`📱 Send ${book.price} EGP to Vodafone Cash: +20 108 010 7649. Upload screenshot after payment.`, 'info');
+          // Simulate upload screenshot
+          setTimeout(() => {
+            if (confirm('📸 Have you sent the payment? Click OK to confirm and download.')) {
+              showToast(`✅ Payment confirmed! Downloading "${book.title}"...`, 'success');
+              // Simulate download
+              const link = document.createElement('a');
+              link.href = '#'; // In real app, this would be a signed URL
+              link.download = `${book.title}.pdf`;
+              link.click();
+              showToast(`📥 "${book.title}" downloaded successfully!`, 'success');
+            }
+          }, 2000);
+        } else {
+          // Visa demo
+          showToast('💳 Visa/Mastercard payment gateway placeholder. Card: 4111 1111 1111 1111, Exp: 12/26, CVV: 123', 'info');
+          setTimeout(() => {
+            if (confirm('Simulate successful Visa payment? Click OK to complete.')) {
+              showToast(`✅ Visa payment successful! Downloading "${book.title}"...`, 'success');
+              const link = document.createElement('a');
+              link.href = '#';
+              link.download = `${book.title}.pdf`;
+              link.click();
+              showToast(`📥 "${book.title}" downloaded!`, 'success');
+            }
+          }, 1500);
+        }
+      }
+
+      // -------- Admin: Upload book --------
+      $('#upload-book-btn').addEventListener('click', () => {
+        const title = $('#book-title').value.trim();
+        const desc = $('#book-description').value.trim();
+        const pages = parseInt($('#book-pages').value);
+        const category = $('#book-category').value;
+        const pdfFile = $('#book-pdf').files[0];
+        const coverFile = $('#book-cover').files[0];
+
+        if (!title || !desc || !pages || !pdfFile) {
+          showToast('Please fill in all fields and select a PDF.', 'error');
+          return;
+        }
+
+        const newBook = {
+          id: Date.now(),
+          title,
+          description: desc,
+          pages: pages || 100,
+          category,
+          price: 50,
+          cover: coverFile ? '📘' : '📘',
+          pdf: pdfFile.name,
+        };
+        books.push(newBook);
+        renderBooks();
+        showToast(`📚 "${title}" uploaded successfully!`, 'success');
+        // Clear fields
+        $('#book-title').value = '';
+        $('#book-description').value = '';
+        $('#book-pages').value = '';
+        $('#book-pdf').value = '';
+        $('#book-cover').value = '';
+      });
+
+      // -------- Book search & filter --------
+      $('#book-search').addEventListener('input', (e) => {
+        const filter = $('#book-category-filter').value;
+        renderBooks(filter, e.target.value);
+      });
+      $('#book-category-filter').addEventListener('change', (e) => {
+        const search = $('#book-search').value;
+        renderBooks(e.target.value, search);
+      });
+
+      // -------- FAQ accordion --------
+      $$('.faq-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const answer = btn.nextElementSibling;
+          const isOpen = !answer.classList.contains('hidden');
+          // Close all
+          $$('.faq-answer').forEach(a => a.classList.add('hidden'));
+          $$('.faq-toggle span:last-child').forEach(s => s.textContent = '+');
+          if (!isOpen) {
+            answer.classList.remove('hidden');
+            btn.querySelector('span:last-child').textContent = '−';
+          }
+        });
+      });
+
+      // -------- Contact form --------
+      $('#contact-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        showToast('📨 Message sent! We\'ll get back to you soon.', 'success');
+        e.target.reset();
+      });
+
+      // -------- Login (demo) --------
+      $('#login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = e.target.querySelector('input[type="email"]').value;
+        const pass = e.target.querySelector('input[type="password"]').value;
+        if (email === 'admin@bishoslab.com' && pass === 'password123') {
+          currentUser = { email, isAdmin: true };
+          showToast('👋 Welcome back, Admin!', 'success');
+          navigate('home');
+          $('#admin-upload-area').classList.remove('hidden');
+          renderBooks();
+        } else if (email && pass) {
+          currentUser = { email, isAdmin: false };
+          showToast(`👋 Welcome, ${email.split('@')[0]}!`, 'success');
+          navigate('home');
+        } else {
+          showToast('Please enter email and password.', 'error');
+        }
+      });
+
+      // -------- Handle hash on load --------
+      function handleHash() {
+        const hash = window.location.hash.slice(1) || 'home';
+        if (pages[hash]) navigate(hash);
+        else navigate('home');
+      }
+      window.addEventListener('hashchange', handleHash);
+
+      // -------- Loader hide --------
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          $('#loader').classList.add('hidden');
+          handleHash();
+          animateStats();
+          renderBooks();
+        }, 600);
+      });
+
+      // -------- Keyboard shortcut: Escape to home --------
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') navigate('home');
+      });
+
+      // -------- Expose for debugging --------
+      window.__bishosLab = { books, currentUser, navigate, showToast };
+
+    })();
+  </script>
 
 </body>
 </html>
